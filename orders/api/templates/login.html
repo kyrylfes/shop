@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="login">
+    {{errors}}
+    <div class="container">
+        <form method="POST" class="basket__form">
+            {% csrf_token %}
+            <input type="text" class="login__input" name="username" placeholder="Username">
+            <input type="password" class="login__input" name="password" placeholder="Password">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

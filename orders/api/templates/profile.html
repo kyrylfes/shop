@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="user">
+    <div class="container">
+          <div class="user__block">
+              <div class="user__wrapper d-flex">
+                  <div class="user__wrap">
+                      {% if user.userprofile.logo %}
+                      <img src="{{ user.userprofile.logo.url }}" alt="Logo" class="user__logo">
+                      {% else %}
+                      <img src="{% static 'img/user.png' %}" alt="Logo" class="user__logo">
+                      {% endif %}
+                      <h3 class="user__username">
+                          {{ user.username }}
+                      </h3>
+                      <p>{{ user.firstname }}</p>
+                      <p>{{ user.lastname }}</p>
+                  </div>
+                  <div class="user__right">
+                      {% if user.is_active %}
+                      <p>Email confirmed</p>
+                      {% else %}
+                      <p>Email not confirmed</p>
+                      {% endif %}
+                      <div class="user__buttons d-flex">
+                          <a href="{% url 'basket' %}" class="user__basket">Basket</a>
+                          <a href="{% url 'logout' %}" class="logout">Logout</a>
+                      </div>
+                  </div>
+              </div>
+              <div class="user__confirmed">
+                  {% for basket in confirmed_baskets.all %}
+                  <div class="user__orders">
+                      <h4>Basket number: {{ forloop.counter }}</h4>
+                      {% for order in basket.orders.all %}
+                      <div class="user__order d-flex">
+                          <img src="{{ order.product.image.url }}" alt="Product image" class="user__order_img">
+                          <div class="user__order_info">
+                              <p>Product name: {{ order.product.name }}</p>
+                              <p>Quantity: {{ order.quantity }}</p>
+                              <p>Date: {{ order.dt }}</p>
+                          </div>
+                      </div>
+                      {% endfor %}
+                  </div>
+                  {% endfor %}
+              </div>
+          </div>
+    </div>
+</section>
+
+
+{% endblock %}

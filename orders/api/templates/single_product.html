@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="product">
+    <div class="container">
+        <div class="product__single d-flex">
+            <div class="product__image">
+                <img src="{{ product.image.url }}" alt="Logo" class="user__logo">
+            </div>
+            <form method="POST" action="{% url 'products-list' %}" class="product__block">
+                <input type="hidden" name="product" value="{{ product.id }}">
+                {% csrf_token %}
+                {% if user.is_authenticated %}
+                <div class="products__admin d-flex">
+                    <a href="{% url 'edit_product' pk=product.id %}?name={{product.name}}&model={{product.model}}&price={{product.price}}&quantity={{product.quantity}}"
+                       class="button">Edit</a>
+                    <a href="{% url 'delete_product' pk=product.id %}" class="button">Delete</a>
+                </div>
+                {% endif %}
+                <h3 class="product__title">
+                    Title: {{ product.name }}
+                </h3>
+                <p class="product__model">
+                    Model: {{ product.model }}
+                </p>
+                <p class="product__price">
+                    Price: {{ product.price }}
+                </p>
+                <p class="product__price">
+                    Category: {{ product.category.name }}
+                </p>
+                <div class="product__quantity">
+                    <p>Quantity</p>
+                    {% if quantity_er %}
+                    <span>No such products in out shop!</span>
+                    {% endif %}
+                    <input type="text" name="quantity" id="quantity" pattern="\d*" value="1" placeholder="1">
+                </div>
+
+                <div class="product__params">
+                    <!--                    <h4>Parameters:</h4>-->
+                    <!--                    {% for productparam in product.productparameter_set.all %}-->
+                    <!--                    <p>{{ productparam.parameter.name }}: {{ productparam.value }}</p>-->
+                    <!--                    {% endfor %}-->
+                    {% if user.is_authenticated %}
+                    <button type="submit">Put in basket</button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

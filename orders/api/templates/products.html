@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="products">
+    <div class="container">
+        <div class="sidebar">
+            <form method="GET" class="sidebar__search">
+                {% csrf_token %}
+                <input type="hidden" name="minprice" value="{% if request.GET.minprice %}{{ request.GET.minprice }}{%else%}{{ min_price}}{% endif%}">
+                <input type="hidden" name="maxprice" value="{% if request.GET.maxprice %}{{ request.GET.maxprice }}{%else%}{{ max_price}}{% endif%}">
+                <input type="hidden" name="category" value="{{ request.GET.category }}">
+                <input type="hidden" name="ordering" value="{{ request.GET.ordering }}">
+                <input type="text" placeholder="Search..." name="search" value="{{ request.GET.search }}" class="products__search_input">
+                <button type="submit">Search</button>
+            </form>
+            <form method="GET" class="sidebar__filter">
+                {% csrf_token %}
+                <input type="hidden" name="search" value="{{ request.GET.search }}">
+                <input type="hidden" name="ordering" value="{{ request.GET.ordering }}">
+                <h2 class="sidebar__title">
+                    Categories
+                </h2>
+                {% for category in categories %}
+                <div class="products__category">
+                    <input type="radio" {% if request.GET.category == category.id %}checked{% endif %} name="category" value="{{ category.id }}" id="category{{ forloop.counter }}">
+                    <label for="category{{ forloop.counter }}">
+                        {{ category.name }}
+                    </label>
+                </div>
+                {% endfor %}
+                <h2 class="sidebar__title sidebar__title_price">
+                    Price
+                </h2>
+                <div class="price-content">
+                    <div class="products__minmax">
+                        <div>
+                            <label>Min</label>
+                            <p id="min-value">${% if request.GET.minprice %}{{ request.GET.minprice }}{%else%}{{min_price}}{%endif%}</p>
+                        </div>
+
+                        <div>
+                          <label>Max</label>
+                          <p id="max-value">${% if request.GET.maxprice %}{{ request.GET.maxprice }}{%else%}{{max_price}}{%endif%}</p>
+                        </div>
+                    </div>
+                    <div class="range-slider">
+                        <input type="range" class="min-price" name="minprice" value="{% if request.GET.minprice %}{{ request.GET.minprice }}{%else%}{{min_price}}{%endif%}" min="{{ min_price}}" max="{{ max_price }}" step="10">
+                        <input type="range" class="max-price" name="maxprice" value="{% if request.GET.maxprice %}{{ request.GET.maxprice }}{%else%}{{max_price}}{%endif%}" min="{{ min_price }}" max="{{ max_price }}" step="10">
+                    </div>
+                </div>
+                <button type="submit">Filter</button>
+            </form>
+            <form method="GET" class="drop_filters">
+                {% csrf_token %}
+                <button type="submit">Drop filters</button>
+            </form>
+        </div>
+        <div class="products__wrap">
+            <div class="products__ordering">
+                <form method="GET">
+                    {% csrf_token %}
+                    <input type="hidden" name="search" value="{{ request.GET.search }}">
+                    <input type="hidden" name="minprice" value="{% if request.GET.minprice %}{{ request.GET.minprice }}{%else%}{{ min_price}}{% endif%}">
+                    <input type="hidden" name="maxprice" value="{% if request.GET.maxprice %}{{ request.GET.maxprice }}{%else%}{{ max_price}}{% endif%}">
+                    <input type="hidden" name="category" value="{{ request.GET.category }}">
+                    <select name="ordering" id="ordering">
+                        <option value="-price" {% if request.GET.ordering == '-price'%}selected{%endif%}>From cheap to expensive</option>
+                        <option value="price" {% if request.GET.ordering == 'price'%}selected{%endif%}>From expensive to cheap</option>
+                    </select>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+            <div class="products__list default_list">
+                {% for product in products_list %}
+                <a href="{% url 'products-detail' pk=product.id %}" class="products__product d-flex">
+                    <img src="{{ product.image.url }}" alt="Logo" class="products__logo">
+                    <div class="products__wrapper">
+                        <h3 class="products__title">
+                            Title: {{ product.name }}
+                        </h3>
+                        <p class="products__model">
+                            Model: {{ product.model }}
+                        </p>
+                        <p class="products__price">
+                            Price: {{ product.price }}$
+                        </p>
+                        <p class="products__category">
+                            Category: {{ product.category.name }}
+                        </p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+let minValue = document.getElementById("min-value");
+let maxValue = document.getElementById("max-value");
+
+function validateRange(minPrice, maxPrice) {
+  if (minPrice > maxPrice) {
+
+    // Swap to Values
+    let tempValue = maxPrice;
+    maxPrice = minPrice;
+    minPrice = tempValue;
+  }
+
+  minValue.innerHTML = "$" + minPrice;
+  maxValue.innerHTML = "$" + maxPrice;
+}
+
+const inputElements = document.querySelectorAll("input[type=range]");
+
+inputElements.forEach((element) => {
+  element.addEventListener("change", (e) => {
+    let minPrice = parseInt(inputElements[0].value);
+    let maxPrice = parseInt(inputElements[1].value);
+
+    validateRange(minPrice, maxPrice);
+  });
+});
+
+</script>
+
+{% endblock %}

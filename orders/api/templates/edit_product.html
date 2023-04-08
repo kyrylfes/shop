@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="signup">
+    <div class="container">
+        <form method="POST" class="editproduct" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="name" id="name" value="{{ request.GET.name }}" placeholder="Product name">
+            <input type="text" name="price" id="price" value="{{ request.GET.price }}" pattern="\d*" placeholder="Price">
+            <input type="text" name="quantity" id="quantity" value="{{ request.GET.quantity }}" pattern="\d*" placeholder="Quantity">
+            <input type="text" name="model" id="model" value="{{ request.GET.model }}" placeholder="Model">
+            <input type="file" name="image" id="image">
+            <select name='category' id="category">
+                {% for category in categories %}
+                <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor%}
+            </select>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="signup">
+    <div class="container">
+        <form method="POST" class="basket__form">
+            {% csrf_token %}
+            {% if serializer_er %}
+            <h4 class="error">{{ serializer_er }}</h4>
+            {% endif %}
+            {% if password_er %}
+            <h4 class="error">{{ password_er }}</h4>
+            {% endif %}
+            {% if email_er %}
+            <h4 class="error">{{ email_er }}</h4>
+            {% endif %}
+            <input type="text" class="sigup__input" required name="username" placeholder="Username">
+            <input type="password" class="sigup__input" required name="password" placeholder="Password">
+            <input type="email" class="sigup__input" required name="email" placeholder="Email">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

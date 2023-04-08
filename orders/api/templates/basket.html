@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="basket">
+    <div class="container">
+        <div class="basket__orders">
+            {% if quantity_er %}
+            <h4 class="error">{{ quantity_er }}</h4>
+            {% endif %}
+            {% for order in basket.orders.all %}
+            <div class="basket__order">
+                <form method="POST" action="{% url 'edit_order' %}" class="basket__info">
+                    <div class="basket__orderinfo">
+                        <h3>Title: {{ order.product.name }}</h3>
+                        <p class="basket__model">Model: {{ order.product.model }}</p>
+                        <p>Quantity: <input type="text" pattern="\d*" name="quantity" value="{{ order.quantity }}"
+                                            class="basket__quantity"></p>
+                    </div>
+                    <input type="hidden" name="order" value="{{ order.id }}">
+                    {% csrf_token %}
+                    <button type="submit">Edit</button>
+                </form>
+                <form method="POST" action="{% url 'delete_order' %}" class="basket__delete">
+                    <input type="hidden" name="order" value="{{ order.id }}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+
+            {% endfor %}
+        </div>
+        {% if basket.orders.all %}
+        <form method="POST" class="basket__form">
+            {% csrf_token %}
+            {% if field_er %}
+            <h4 class="error">{{field_er}}</h4>
+            {% endif %}
+            <input type="text" name="address" class="basket__input" placeholder="Address" required>
+            <input type="tel" name="phone" class="basket__input" placeholder="Phone" required>
+            <input type="text" name="city" class="basket__input" placeholder="City" required>
+            <input type="text" name="index" class="basket__input" placeholder="Index" required>
+            <div class="basket__mail">
+                <h2>
+                    Choose mail:
+                </h2>
+                <div>
+                    <input type="radio" name="mail" class="basket__input" id="nova" value="нова почта" required>
+                    <label for="nova">Nova Poshta</label>
+                    <input type="radio" name="mail" class="basket__input" id="ukr" value="укр почта">
+                    <label for="ukr">Ukr Poshta</label>
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

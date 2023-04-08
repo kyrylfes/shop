@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="login">
+    <h1>Product Categories</h1>
+    {{ product_categories|safe }}
+
+    <h1>Quantity of products in orders</h1>
+    {{ product_quantities|safe }}
+</section>
+
+{% endblock %}
